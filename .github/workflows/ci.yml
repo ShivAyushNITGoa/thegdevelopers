@@ -5,6 +5,12 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
 
 jobs:
   lint:
@@ -12,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -30,11 +36,12 @@ jobs:
 
       - name: Upload ESLint report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: eslint-report
           path: eslint_report.json
           if-no-files-found: ignore
+          retention-days: 7
 
   test:
     name: Test
@@ -42,12 +49,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -61,16 +68,17 @@ jobs:
 
       - name: Upload test coverage
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/
           if-no-files-found: warn
+          retention-days: 7
 
       - name: Check test results
         if: steps.run-tests.outcome != 'success'
         run: |
-          echo "::error::Tests failed! Check the test report for details."
+          echo "Tests failed! Check the test report for details."
           exit 1
 
   build:
@@ -79,12 +87,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -95,23 +103,24 @@ jobs:
         id: build
         run: |
           npm run build
-          echo "::set-output name=status::success"
+          echo "status=success" >> $GITHUB_OUTPUT
         continue-on-error: true
     
       - name: Archive build artifacts
         if: steps.build.outputs.status == 'success'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: |
             apps/*/dist
             apps/*/.next
             packages/*/dist
+          retention-days: 1
     
       - name: Report build failure
         if: steps.build.outputs.status != 'success'
         run: |
-          echo "::error::Build failed! Check the build logs for details."
+          echo "Build failed! Check the build logs for details."
           exit 1
 
   deploy:
@@ -122,16 +131,16 @@ jobs:
     environment: production
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-artifacts
 
@@ -141,20 +150,18 @@ jobs:
       - name: Deploy to Vercel
         id: deploy
         run: |
-          # TODO: Replace with your actual Vercel token in repository secrets
-          vercel deploy --prod --token="placeholder_vercel_token" || exit_code=$?
+          vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" || exit_code=$?
           if [ -n "$exit_code" ]; then
-            echo "::error::Deployment failed with exit code $exit_code"
+            echo "Deployment failed with exit code $exit_code"
             exit 1
           fi
         env:
-          # TODO: Add these credentials to your repository secrets
-          VERCEL_PROJECT_ID: "placeholder_project_id"
-          VERCEL_ORG_ID: "placeholder_org_id"
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
 
       - name: Notify on deployment status
         if: always()
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const scriptPath = require('path').resolve('.github/scripts/notify-deployment.js');
@@ -172,12 +179,12 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -194,16 +201,17 @@ jobs:
 
       - name: Upload accessibility report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: accessibility-report
           path: accessibility-report/
           if-no-files-found: warn
+          retention-days: 7
 
       - name: Check accessibility result
         if: steps.a11y-check.outcome == 'failure'
         run: |
-          echo "::warning::Accessibility checks found issues. See the report for details."
+          echo "Accessibility checks found issues. See the report for details."
 
   performance-check:
     name: Performance Check
@@ -212,12 +220,12 @@ jobs:
     continue-on-error: true
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -230,16 +238,17 @@ jobs:
 
       - name: Upload Lighthouse report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lighthouse-report
           path: lighthouse/
           if-no-files-found: warn
+          retention-days: 7
       
       - name: Check performance result
         if: steps.lighthouse.outcome == 'failure'
         run: |
-          echo "::warning::Performance checks found issues. See the Lighthouse report for details."
+          echo "Performance checks found issues. See the Lighthouse report for details."
 
   notify:
     name: Notification
@@ -248,22 +257,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send status notification
-        uses: actions/github-script@v6
-        with:
-          script: |
-            const deployStatus = '${{ needs.deploy.result }}';
-            const a11yStatus = '${{ needs.accessibility-check.result }}';
-            const perfStatus = '${{ needs.performance-check.result }}';
-            
-            let summary = '## Deployment Summary\n\n';
-            summary += `- **Deployment**: ${deployStatus === 'success' ? '✅ Success' : '❌ Failed'}\n`;
-            summary += `- **Accessibility**: ${a11yStatus === 'success' ? '✅ Passed' : a11yStatus === 'failure' ? '⚠️ Issues found' : '⚠️ Check skipped'}\n`;
-            summary += `- **Performance**: ${perfStatus === 'success' ? '✅ Passed' : perfStatus === 'failure' ? '⚠️ Issues found' : '⚠️ Check skipped'}\n\n`;
-            summary += 'Check the artifacts for detailed reports.';
-            
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: summary
-            }); 
+        if: always()
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_COLOR: ${{ needs.deploy.result }}
+          SLACK_TITLE: Deployment Status
+          SLACK_MESSAGE: |
+            Deployment: ${{ needs.deploy.result == 'success' && '✅ Success' || '❌ Failed' }}
+            Accessibility: ${{ needs.accessibility-check.result == 'success' && '✅ Passed' || needs.accessibility-check.result == 'failure' && '⚠️ Issues found' || '⚠️ Check skipped' }}
+            Performance: ${{ needs.performance-check.result == 'success' && '✅ Passed' || needs.performance-check.result == 'failure' && '⚠️ Issues found' || '⚠️ Check skipped' }}
+          SLACK_FOOTER: "GDevelopers CI/CD Pipeline" 

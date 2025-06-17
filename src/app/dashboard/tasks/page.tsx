@@ -88,6 +88,23 @@ const TEAM_MEMBERS = [
   { id: 'tm5', name: 'Casey Jones', avatar: '👩‍💻' }
 ];
 
+// Map status to TaskManager expected format
+const mapStatus = (status: string) => {
+  const statusMap: Record<string, 'todo' | 'inProgress' | 'review' | 'done'> = {
+    'Todo': 'todo',
+    'In Progress': 'inProgress',
+    'Review': 'review',
+    'Done': 'done'
+  };
+  return statusMap[status] || 'todo';
+};
+
+// Map priority to TaskManager expected format
+const mapPriority = (priority: string): 'low' | 'medium' | 'high' => {
+  if (priority === 'urgent') return 'high';
+  return priority as 'low' | 'medium' | 'high';
+};
+
 export default function TasksPage() {
   // State for view mode
   const [viewMode, setViewMode] = useState<'board' | 'list'>('board');
@@ -113,6 +130,17 @@ export default function TasksPage() {
     if (filters.tag && !task.tags.includes(filters.tag)) return false;
     return true;
   });
+  
+  // Map tasks to TaskManager format
+  const mappedTasks = filteredTasks.map(task => ({
+    id: task.id,
+    title: task.title,
+    description: task.description,
+    status: mapStatus(task.status),
+    priority: mapPriority(task.priority),
+    assignee: task.assignee,
+    dueDate: task.dueDate
+  }));
   
   // Calculate task statistics
   const taskStats = {
@@ -383,7 +411,7 @@ export default function TasksPage() {
         
         {/* Task View (Board or List) */}
         {viewMode === 'board' ? (
-          <TaskManager initialTasks={filteredTasks} />
+          <TaskManager initialTasks={mappedTasks} />
         ) : (
           renderListView()
         )}
