@@ -1,0 +1,1 @@
+/** @type {import('next').NextConfig} */ const nextConfig = { reactStrictMode: true, transpilePackages: ['ui', 'config'], basePath: '/docs', async headers() { return [ { source: '/:path*', headers: [ { key: 'x-app-name', value: 'docs', }, ], }, ]; }, }; module.exports = nextConfig;

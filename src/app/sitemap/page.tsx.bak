@@ -1,0 +1,103 @@
+import React from 'react';
+import Link from 'next/link';
+
+export default function SitemapPage() {
+  const siteStructure = [
+    {
+      category: 'Main',
+      links: [
+        { name: 'Home', href: '/' },
+        { name: 'Services', href: '/services' },
+        { name: 'Projects', href: '/projects' },
+        { name: 'About', href: '/about' },
+        { name: 'Contact', href: '/contact' },
+      ]
+    },
+        { name: 'Contact', href: '/contact' },
+      ]
+    },
+    {
+      category: 'Our Work',
+      links: [
+        { name: 'Case Studies', href: '/case-studies' },
+        { name: 'Testimonials', href: '/testimonials' },
+      ]
+    },
+    {
+      category: 'Company',
+      links: [
+        { name: 'Team', href: '/team' },
+        { name: 'Careers', href: '/careers' },
+        { name: 'Blog', href: '/blog' },
+      ]
+    },
+    {
+      category: 'Dashboard',
+      links: [
+        { name: 'Dashboard Home', href: '/dashboard' },
+        { name: 'New Project', href: '/dashboard/new-project' },
+        { name: 'Performance', href: '/dashboard/performance' },
+        { name: 'Tasks', href: '/dashboard/tasks' },
+      ]
+    },
+    {
+      category: 'Resources',
+      links: [
+        { name: 'Resources Hub', href: '/resources' },
+        { name: 'FAQ', href: '/faq' },
+      ]
+    },
+    {
+      category: 'Legal',
+      links: [
+        { name: 'Privacy Policy', href: '/privacy-policy' },
+        { name: 'Terms of Service', href: '/terms-of-service' },
+        { name: 'Accessibility', href: '/accessibility' },
+      ]
+    },
+  ];
+
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Sitemap</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            A complete overview of all pages available on The GDevelopers website
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {siteStructure.map((section) => (
+            <div key={section.category} className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                {section.category}
+              </h2>
+              <ul className="space-y-2">
+                {section.links.map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.href}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center group"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-4 w-4 mr-2 group-hover:translate-x-1 transition-transform"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}

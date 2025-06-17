@@ -1,0 +1,51 @@
+{
+  "name": "gdevelopers-portal",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "dev:all": "node run-all.js",
+    "dev:main": "turbo dev --filter=main",
+    "dev:blog": "turbo dev --filter=blog",
+    "dev:auth": "turbo dev --filter=auth",
+    "dev:docs": "turbo dev --filter=docs",
+    "dev:contact": "turbo dev --filter=contact",
+    "dev:team": "turbo dev --filter=team",
+    "dev:projects": "turbo dev --filter=projects",
+    "build": "turbo build",
+    "start": "turbo start",
+    "lint": "turbo lint"
+  },
+  "dependencies": {
+    "i18next": "^23.0.0",
+    "i18next-browser-languagedetector": "^7.0.0",
+    "next": "^13.4.19",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-i18next": "^13.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.5.0",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.15",
+    "eslint": "^8.47.0",
+    "eslint-config-next": "^13.4.19",
+    "msw": "^2.10.2",
+    "postcss": "^8.4.28",
+    "tailwindcss": "^3.3.3",
+    "turbo": "^1.10.12",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.1.6"
+  }
+}
