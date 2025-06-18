@@ -1,1 +1,6 @@
-{"version":2,"framework":"nextjs","rootDirectory":"apps/main"}
+{
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "cd apps/main && npm install && npm run build",
+  "outputDirectory": "apps/main/.next"
+}
