@@ -142,11 +142,11 @@ export default function Footer() {
                     </Link>
                   </li>
                 ))}
-              </ul>
-            </div>
+            </ul>
+          </div>
           ))}
-        </div>
-        
+          </div>
+          
         <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
           <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 shadow-md transform hover:shadow-lg transition-shadow duration-300">
             <form className="max-w-md mx-auto">

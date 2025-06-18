@@ -1,0 +1,10 @@
+{
+  "/_not-found": "app/_not-found.js",
+  "/api/performance/route": "app/api/performance/route.js",
+  "/dashboard/monitoring/page": "app/dashboard/monitoring/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/performance/page": "app/dashboard/performance/page.js",
+  "/page": "app/page.js",
+  "/products/page": "app/products/page.js",
+  "/about/page": "app/about/page.js"
+}

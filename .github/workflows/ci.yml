@@ -128,7 +128,6 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: production
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -150,7 +149,7 @@ jobs:
       - name: Deploy to Vercel
         id: deploy
         run: |
-          vercel deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" || exit_code=$?
+          vercel --cwd apps/main deploy --prod --token="${{ secrets.VERCEL_TOKEN }}" || exit_code=$?
           if [ -n "$exit_code" ]; then
             echo "Deployment failed with exit code $exit_code"
             exit 1
