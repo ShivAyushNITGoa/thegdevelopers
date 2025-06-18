@@ -1,0 +1,10 @@
+.git/
+node_modules/
+npm-debug.log
+.next/
+.turbo/
+.vercel/
+dist/
+/apps/*
+!/apps/main
+/packages/* 
